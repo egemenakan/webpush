@@ -1,5 +1,5 @@
 self.addEventListener("push", (e) => {
-  console.log("e :>> ", e.data.text());
+  console.log("e :>> ", e.data.text())
   const config = {
     body: e.data.text() || "Yeni Makaleye Gözatın!!",
     data: {
@@ -20,8 +20,24 @@ self.addEventListener("push", (e) => {
         // icon:
       },
     ],
-  };
-  e.waitUntil(
-    self.registration.showNotification("Yeni Makale Eklendi!!", config)
-  );
-});
+  }
+  e.waitUntil(self.registration.showNotification("Yeni Makale Eklendi!!", config))
+})
+
+self.addEventListener(
+  "notificationclick",
+  function (event) {
+    var messageId = event.notification.data
+
+    event.notification.close()
+
+    if (event.action === "explore") {
+      silentlyLikeItem()
+    } else if (event.action === "reply") {
+      clients.openWindow("/messages?reply=" + messageId)
+    } else {
+      clients.openWindow("/messages?reply=" + messageId)
+    }
+  },
+  false
+)
